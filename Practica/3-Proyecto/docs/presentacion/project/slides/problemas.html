@@ -1,0 +1,15 @@
+<section id="problemas" data-transition="fade" data-section="Ponente 2: por qué y cómo normalizamos" style="background:#F6F5F0;color:#14213D;font-family:'Public Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">¿Qué falla si lo guardamos tal cual?</h2>
+<table style="font-size:28px;color:#14213D;background:#FFFFFF">
+<tr><th style="width:30%">Problema</th><th style="width:70%">Ejemplo con nuestros datos</th></tr>
+<tr><td><b>Redundancia</b></td><td>“Septiembre · 18/09/2023 · Madrid” se repite en los 15 alumnos de la clase 1</td></tr>
+<tr><td><b>Grupos repetidos</b></td><td>5 columnas Proyecto_X para el mismo dato: un proyecto nuevo obliga a cambiar la tabla</td></tr>
+<tr><td><b>Al actualizar</b></td><td>Cambiar la fecha de una promoción = cambiar 15 filas; si se olvida una, se contradicen</td></tr>
+<tr><td><b>Al insertar</b></td><td>No se puede crear una promoción que todavía no tiene alumnos</td></tr>
+<tr><td><b>Al borrar</b></td><td>Si se borra el último alumno, se pierden los datos de su promoción</td></tr>
+</table>
+<p style="font-size:32px;color:#3E4A5E">La <b style="color:#2F6FEB">normalización</b> lo resuelve en tres pasos: 1FN, 2FN y 3FN.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#6B7690">Bloque 2 · [Ponente 2]</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6B7690">5</p>
+<aside>Ponente 2. Explica los cinco problemas con los ejemplos reales. Los tres últimos se llaman “anomalías” de actualización, inserción y borrado: es la palabra técnica que conviene decir. La idea clave: cuando un dato está repetido, tarde o temprano las copias dejan de coincidir.</aside>
+</section>

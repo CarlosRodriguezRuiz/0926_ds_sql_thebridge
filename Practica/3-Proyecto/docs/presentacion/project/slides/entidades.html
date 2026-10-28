@@ -1,0 +1,31 @@
+<section id="entidades" data-transition="fade" style="background:#F6F5F0;color:#14213D;font-family:'Public Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">4 entidades y 4 relaciones N:M</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:24px">
+<div style="display:flex;flex-direction:column;gap:10px;background:#14213D;border-radius:20px;padding:32px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:700;color:#F6F5F0">Alumnos</h3>
+<p style="font-size:26px;color:#C9D3E6">Id, Nombre, Email</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#14213D;border-radius:20px;padding:32px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:700;color:#F6F5F0">Promoción</h3>
+<p style="font-size:26px;color:#C9D3E6">Id, Año, Fecha, Campus, Vertical</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#14213D;border-radius:20px;padding:32px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:700;color:#F6F5F0">Proyectos</h3>
+<p style="font-size:26px;color:#C9D3E6">Id, Nombre</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;background:#14213D;border-radius:20px;padding:32px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:700;color:#F6F5F0">Claustro</h3>
+<p style="font-size:26px;color:#C9D3E6">Id, Nombre, Rol, Modalidad</p>
+</div>
+</div>
+<table style="font-size:28px;color:#14213D;background:#FFFFFF">
+<tr><th style="width:22%">Relación</th><th style="width:30%">Entre</th><th style="width:48%">Se lee</th></tr>
+<tr><td><b>Pertenecen</b></td><td>Alumnos – Promoción</td><td>Un alumno puede estar en varias promociones</td></tr>
+<tr><td><b>Realizan</b></td><td>Alumnos – Proyectos</td><td>Con el atributo <b>Evaluación</b></td></tr>
+<tr><td><b>Tienen</b></td><td>Promoción – Proyectos</td><td>Qué proyectos tiene cada promoción</td></tr>
+<tr><td><b>Tiene</b></td><td>Promoción – Claustro</td><td>Qué profesores da cada promoción</td></tr>
+</table>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#6B7690">Bloque 3 · [Ponente 3]</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6B7690">8</p>
+<aside>Ponente 3. Cada tabla “principal” que salió de normalizar es una entidad; las tablas que unen dos cosas son relaciones. ¿Por qué Alumnos–Promoción es N:M y no 1:N? Hoy cada alumno está en una sola promoción, pero en la realidad alguien puede hacer Data Science y después Full Stack. Con N:M la base de datos ya está preparada sin cambiar nada.</aside>
+</section>

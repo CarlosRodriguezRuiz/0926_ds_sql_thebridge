@@ -1,0 +1,24 @@
+<section id="escala" data-transition="fade" style="background:#F6F5F0;color:#14213D;font-family:'Public Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Escalable: crecer es añadir filas</h2>
+<div style="display:flex;gap:40px;align-items:center">
+<div style="flex:1;display:flex;flex-direction:column;gap:24px">
+<p style="font-size:24px;font-weight:700;color:#2F6FEB;text-transform:uppercase;letter-spacing:2px">Abrir el campus de Barcelona</p>
+<div style="background:#14213D;border-radius:20px;padding:36px 40px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;line-height:1.55;color:#E8EDF6"><span style="color:#7FB4FF">INSERT INTO</span> promocion<br>(año, fecha_comienzo, campus, vertical)<br><span style="color:#7FB4FF">VALUES</span> (2025, <span style="color:#A6E3A1">'2025-09-15'</span>,<br><span style="color:#A6E3A1">'Barcelona'</span>, <span style="color:#A6E3A1">'DS'</span>);</p>
+</div>
+<p style="font-size:28px;color:#3E4A5E">Sin tocar la estructura. El id se genera solo.</p>
+</div>
+<table style="width:760px;font-size:28px;color:#14213D;background:#FFFFFF">
+<tr><th style="width:56%">Quiero añadir…</th><th style="width:44%">¿Cambia la estructura?</th></tr>
+<tr><td>Un campus o promoción</td><td>No</td></tr>
+<tr><td>Un proyecto</td><td>No</td></tr>
+<tr><td>Una vertical</td><td>No</td></tr>
+<tr><td>Un profesor</td><td>No</td></tr>
+<tr><td>Un alumno en 2 bootcamps</td><td>No (gracias a N:M)</td></tr>
+<tr><td>Una modalidad nueva</td><td>Sí: hoy es un ENUM</td></tr>
+</table>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#6B7690">Bloque 6 · [Ponente 6]</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6B7690">17</p>
+<aside>Ponente 6. El enunciado pide que pueda crecer en campus, verticales, promociones y modalidades. Gracias a la normalización, casi todo se hace con un INSERT. Si hay tiempo, ejecutad este INSERT en directo y repetid la consulta de alumnos por promoción para que se vea la promoción nueva. Sed honestos con el último punto: añadir una modalidad hoy obliga a cambiar el ENUM; es la primera mejora de la siguiente diapositiva.</aside>
+</section>

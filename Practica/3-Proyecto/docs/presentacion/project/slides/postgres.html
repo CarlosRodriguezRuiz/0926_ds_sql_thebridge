@@ -1,0 +1,28 @@
+<section id="postgres" data-transition="fade" style="background:#F6F5F0;color:#14213D;font-family:'Public Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">De MySQL Workbench a PostgreSQL</h2>
+<table style="font-size:26px;color:#14213D;background:#FFFFFF">
+<tr><th style="width:34%">En MySQL</th><th style="width:36%">En PostgreSQL</th><th style="width:30%">Por qué</th></tr>
+<tr><td style="font-family:'JetBrains Mono', 'Courier New', monospace">AUTO_INCREMENT</td><td style="font-family:'JetBrains Mono', 'Courier New', monospace">GENERATED … AS IDENTITY</td><td>Numeración automática estándar</td></tr>
+<tr><td style="font-family:'JetBrains Mono', 'Courier New', monospace">ENUM("presencial",…)</td><td style="font-family:'JetBrains Mono', 'Courier New', monospace">VARCHAR + CHECK</td><td>No admite ENUM en la tabla</td></tr>
+<tr><td style="font-family:'JetBrains Mono', 'Courier New', monospace">CREATE DATABASE, USE</td><td>Se quitan</td><td>Supabase ya da la base</td></tr>
+<tr><td style="font-family:'JetBrains Mono', 'Courier New', monospace">`id` (comillas)</td><td>Sin comillas</td><td>PostgreSQL no las entiende</td></tr>
+<tr><td>—</td><td style="font-family:'JetBrains Mono', 'Courier New', monospace">BEGIN … COMMIT</td><td>Si algo falla, nada a medias</td></tr>
+</table>
+<div style="display:flex;gap:28px">
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#EAEEF6;border-radius:20px;padding:28px 32px">
+<p style="font-size:26px;font-weight:700">1 · Crear las tablas</p>
+<p style="font-size:24px;color:#3E4A5E">Primero las 4 sin FK, después las intermedias</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#EAEEF6;border-radius:20px;padding:28px 32px">
+<p style="font-size:26px;font-weight:700">2 · Cargar los CSV</p>
+<p style="font-size:24px;color:#3E4A5E">INSERT generados aplicando la normalización</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#EAEEF6;border-radius:20px;padding:28px 32px">
+<p style="font-size:26px;font-weight:700">3 · Ejecutar en Supabase</p>
+<p style="font-size:24px;color:#3E4A5E">SQL Editor → pegar el script → Run</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#6B7690">Bloque 5 · [Ponente 5]</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6B7690">13</p>
+<aside>Ponente 5. Primero probamos el diseño en local con MySQL Workbench. El enunciado pide PostgreSQL alojado en un servidor; usamos Supabase, que es PostgreSQL gratuito en la nube (el enunciado sugería Render; los dos sirven). El orden de creación importa: una FK solo puede apuntar a una tabla que ya existe. Detalle técnico: como insertamos los id a mano, al final del script se reajusta el contador para que el siguiente alumno sea el 53.</aside>
+</section>

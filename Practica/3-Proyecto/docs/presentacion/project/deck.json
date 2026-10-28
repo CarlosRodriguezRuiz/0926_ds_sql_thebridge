@@ -1,0 +1,21 @@
+{
+  "v": 4,
+  "createdOnFiles": {"v": 1, "at": "2026-10-27T20:15:00Z"},
+  "lists": "css",
+  "title": "Proyecto BBDD Relacional",
+  "order": ["cover", "reparto", "reto", "datos", "problemas", "fn1", "fn23", "entidades", "er", "reglas", "logico", "verificacion", "postgres", "esquema", "recuento", "consulta", "escala", "mejoras", "preguntas"],
+  "sections": {
+    "s1": {"description": "Ponente 1: qué nos pedían y los datos de partida", "start": "cover"},
+    "s2": {"description": "Ponente 2: por qué y cómo normalizamos", "start": "problemas"},
+    "s3": {"description": "Ponente 3: el modelo Entidad-Relación", "start": "entidades"},
+    "s4": {"description": "Ponente 4: modelo lógico y verificación de la normalización", "start": "reglas"},
+    "s5": {"description": "Ponente 5: creación de la base de datos en PostgreSQL (Supabase)", "start": "postgres"},
+    "s6": {"description": "Ponente 6: demo, escalabilidad y conclusiones", "start": "consulta"}
+  },
+  "faces": {
+    "space-grotesk": {"family": "Space Grotesk", "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Public+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap"},
+    "public-sans": {"family": "Public Sans", "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Public+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap"},
+    "jetbrains-mono": {"family": "JetBrains Mono", "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Public+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap"}
+  },
+  "designSystems": []
+}

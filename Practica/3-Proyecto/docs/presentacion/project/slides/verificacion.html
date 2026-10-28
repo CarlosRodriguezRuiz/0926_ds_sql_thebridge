@@ -1,0 +1,26 @@
+<section id="verificacion" data-transition="fade" style="background:#F6F5F0;color:#14213D;font-family:'Public Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Verificación: las 8 tablas cumplen la 3FN</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#E6F2EB;border-radius:20px;padding:40px">
+<div style="display:flex;gap:16px;align-items:center">
+<x-icon name="CheckCircle" style="color:#1F7A4D;width:48px;height:48px"></x-icon>
+<h3 style="font-size:36px;font-weight:700">Comprobado tabla a tabla</h3>
+</div>
+<p style="font-size:28px;line-height:1.45;color:#2E4A3A">1FN, 2FN y 3FN sobre el modelo final. PK en todas las tablas, FK en todas las intermedias.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFF1E5;border-radius:20px;padding:40px">
+<div style="display:flex;gap:16px;align-items:center">
+<x-icon name="Wrench" style="color:#B45309;width:48px;height:48px"></x-icon>
+<h3 style="font-size:36px;font-weight:700">Error encontrado y corregido</h3>
+</div>
+<p style="font-size:28px;line-height:1.45;color:#5A3A1A">La promoción del alumno estaba dos veces: en <b>alumnos.id_promocion</b> y en <b>alumnosPromocion</b>. Quitamos la columna.</p>
+</div>
+</div>
+<div style="display:flex;gap:28px;align-items:center;background:#14213D;border-radius:20px;padding:36px 44px">
+<p style="font-size:30px;font-weight:700;color:#F2A65A;white-space:nowrap">Decisión consciente</p>
+<p style="font-size:30px;color:#F6F5F0;line-height:1.4">“Año” se puede sacar de la fecha. Lo mantenemos porque facilita las consultas, sabiendo que es un dato derivado.</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#6B7690">Bloque 4 · [Ponente 4]</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6B7690">12</p>
+<aside>Ponente 4. Este es el punto 3 del enunciado: volvemos a comprobar la normalización sobre las tablas finales. Contad el error que encontramos: es buena señal, demuestra que la verificación sirve. Teníamos la relación alumno–promoción como 1:N (columna en alumnos) y además como N:M (tabla intermedia): el mismo dato en dos sitios. Da paso al Ponente 5: “Con el diseño validado, toca crear la base de datos”.</aside>
+</section>

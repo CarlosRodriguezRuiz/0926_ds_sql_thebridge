@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Proyecto Base de Datos Relacional</title>
+<style>
+  @page { size: A4; margin: 14mm 15mm 14mm 15mm; }
+  :root {
+    --ink: #1d2433; --muted: #5b6475; --line: #d9dee7; --soft: #f4f6fa;
+    --accent: #2457c5; --accent-soft: #e8eefb; --ok: #1f7a4d; --ok-soft: #e6f4ec;
+    --warn: #9a5b00; --warn-soft: #fdf3e2; --bad: #b42318; --bad-soft: #fdecea;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--ink); font-size: 10pt; line-height: 1.45; margin: 0; background: #fff; }
+  h1, h2, h3 { line-height: 1.25; break-after: avoid; }
+  h1 { font-size: 21pt; margin: 0 0 4mm; color: var(--accent); }
+  h2 { font-size: 14pt; margin: 7mm 0 2mm; padding-bottom: 1mm; border-bottom: 2px solid var(--accent-soft); }
+  h3 { font-size: 11.5pt; margin: 5mm 0 1.5mm; }
+  p { margin: 0 0 2.5mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+  li { margin-bottom: 1mm; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 9.2pt; background: var(--soft); padding: 0 1.2mm; border-radius: 1mm; }
+  pre { font-family: Consolas, "Courier New", monospace; font-size: 8.6pt; line-height: 1.4; background: #1e2430; color: #e8ecf3; padding: 3mm 4mm; border-radius: 2mm; margin: 2mm 0 4mm; white-space: pre-wrap; break-inside: avoid; }
+  pre .c { color: #8fa1b8; } pre .k { color: #7fb4ff; font-weight: 600; } pre .s { color: #a6e3a1; }
+  table { border-collapse: collapse; width: 100%; margin: 2mm 0 4mm; font-size: 9.3pt; break-inside: avoid; }
+  th, td { border: 1px solid var(--line); padding: 1.3mm 2mm; text-align: left; vertical-align: top; }
+  th { background: var(--soft); font-weight: 600; }
+  td.num, th.num { text-align: right; }
+  .small { font-size: 8.8pt; }
+  .muted { color: var(--muted); }
+  .bad { background: var(--bad-soft); }
+  .good { background: var(--ok-soft); }
+  .box { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 2.5mm 4mm; margin: 3mm 0 4mm; border-radius: 0 2mm 2mm 0; break-inside: avoid; }
+  .box.ok { border-color: var(--ok); background: var(--ok-soft); }
+  .box.warn { border-color: var(--warn); background: var(--warn-soft); }
+  .box.bad { border-color: var(--bad); background: var(--bad-soft); }
+  .box b.t { display: block; margin-bottom: 1mm; }
+  .page { break-before: page; }
+  .keep { break-inside: avoid; }
+  figure { margin: 3mm 0 5mm; break-inside: avoid; }
+  figure img, figure svg { width: 100%; border: 1px solid var(--line); border-radius: 2mm; display: block; }
+  figcaption { font-size: 8.8pt; color: var(--muted); margin-top: 1.5mm; text-align: center; }
+  .crop { overflow: hidden; border: 1px solid var(--line); border-radius: 2mm; }
+  .crop img { border: 0; margin-top: -5.6%; }
+  .shot img { border: 1px solid var(--line); }
+  .step { display: inline-block; background: var(--accent); color: #fff; font-weight: 700; border-radius: 1.5mm; padding: 0 2mm; margin-right: 2mm; font-size: 10pt; }
+  .tag { display: inline-block; font-size: 8pt; font-weight: 700; padding: 0 1.5mm; border-radius: 1mm; border: 1px solid currentColor; }
+  .tag.pk { color: #8a5a00; } .tag.fk { color: var(--accent); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .arrow { text-align: center; font-size: 15pt; color: var(--accent); margin: -1mm 0 1mm; }
+
+  /* Portada */
+  .cover { height: 255mm; display: flex; flex-direction: column; justify-content: center; }
+  .cover .kicker { font-size: 11pt; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 3mm; }
+  .cover h1 { font-size: 30pt; color: var(--ink); margin-bottom: 4mm; }
+  .cover .sub { font-size: 13pt; color: var(--muted); max-width: 150mm; }
+  .cover .bar { width: 30mm; height: 2mm; background: var(--accent); margin: 8mm 0; border-radius: 1mm; }
+  .cover dl { display: grid; grid-template-columns: 38mm 1fr; gap: 1.5mm 4mm; font-size: 10.5pt; margin: 0; }
+  .cover dt { color: var(--muted); }
+  .cover dd { margin: 0; }
+  .toc ol { list-style: none; padding: 0; }
+  .toc li { display: flex; gap: 3mm; padding: 1.6mm 0; border-bottom: 1px dotted var(--line); }
+  .toc li span:first-child { color: var(--accent); font-weight: 700; min-width: 9mm; }
+</style>
+</head>
+<body>
+
+<!-- ============ PORTADA ============ -->
+<section class="cover">
+  <div class="kicker">Bootcamp · Data Science &amp; Full Stack · Módulo SQL</div>
+  <h1>Proyecto de Creación de una Base de Datos Relacional</h1>
+  <p class="sub">Explicación paso a paso: de unos CSV sin normalizar a una base de datos PostgreSQL alojada en la nube y lista para consultar.</p>
+  <div class="bar"></div>
+  <dl>
+    <dt>Tipo de trabajo</dt><dd>Proyecto grupal</dd>
+    <dt>Datos de partida</dt><dd>5 ficheros CSV: <code>clase_1</code> … <code>clase_4</code> y <code>claustro</code></dd>
+    <dt>Herramientas</dt><dd>draw.io · MySQL Workbench · PostgreSQL (Supabase)</dd>
+    <dt>Resultado</dt><dd>8 tablas · 420 filas · consultas de demostración</dd>
+  </dl>
+</section>
+
+<!-- ============ ÍNDICE ============ -->
+<section class="page toc">
+  <h1>Índice</h1>
+  <ol>
+    <li><span>0</span><span>Antes de empezar: qué pide el proyecto y vocabulario básico</span></li>
+    <li><span>1</span><span>Los datos de partida</span></li>
+    <li><span>2</span><span>Paso 1 · Normalización y modelo Entidad-Relación</span></li>
+    <li><span>3</span><span>Paso 2 · Modelo lógico (relacional)</span></li>
+    <li><span>4</span><span>Paso 3 · Verificación de la normalización</span></li>
+    <li><span>5</span><span>Paso 4 · Creación de la base de datos (MySQL y PostgreSQL en Supabase)</span></li>
+    <li><span>6</span><span>Consultas de demostración</span></li>
+    <li><span>7</span><span>Escalabilidad: cómo crece la base de datos</span></li>
+    <li><span>8</span><span>Decisiones, limitaciones y mejoras futuras</span></li>
+    <li><span>A</span><span>Anexo: ficheros entregados</span></li>
+  </ol>
+
+  <div class="box">
+    <b class="t">Cómo leer este documento</b>
+    Está pensado para que cualquier miembro del grupo pueda entender y defender el proyecto en la presentación,
+    aunque no haya hecho la parte técnica. Cada paso explica <b>qué</b> se hace, <b>por qué</b> y <b>con qué resultado</b>,
+    usando siempre nuestros datos reales.
+  </div>
+</section>
+
+<!-- ============ 0. INTRO ============ -->
+<section class="page">
+  <h1>0 · Antes de empezar</h1>
+
+  <h2>Qué nos pide el proyecto</h2>
+  <p>Nos dan los datos de los alumnos de varias promociones del bootcamp (y de sus profesores) en ficheros CSV
+     <b>sin normalizar</b>: todo mezclado en una tabla grande, con muchos datos repetidos. Tenemos que convertirlos en una
+     <b>base de datos relacional</b> bien diseñada, que no repita información, que sea capaz de crecer (más campus, verticales,
+     promociones, modalidades…) y que esté alojada en un servidor para poder consultarla desde otras aplicaciones.</p>
+
+  <table>
+    <tr><th>Tarea del enunciado</th><th>Qué entregamos</th></tr>
+    <tr><td>1. Modelo Entidad-Relación (E/R)</td><td>Diagrama E/R hecho en draw.io</td></tr>
+    <tr><td>2. Modelo lógico</td><td>Esquema relacional: tablas, columnas, claves primarias y foráneas</td></tr>
+    <tr><td>3. Normalización</td><td>Análisis de la tabla original y comprobación de 1FN, 2FN y 3FN</td></tr>
+    <tr><td>4. Creación de la base de datos</td><td>Scripts SQL (MySQL y PostgreSQL) + base de datos en Supabase + consultas</td></tr>
+  </table>
+
+  <div class="box warn">
+    <b class="t">Sobre el orden de los pasos</b>
+    El enunciado pone la normalización en tercer lugar. Ese orden es el "clásico" de los libros, pensado para cuando <i>no</i>
+    tienes datos y diseñas desde cero. Nosotros <b>sí</b> partimos de una tabla con datos, así que lo natural es
+    <b>normalizar primero</b>: de la normalización salen solas las entidades del E/R. Por eso trabajamos así:
+    <ol style="margin:1.5mm 0 0">
+      <li><b>Paso 1:</b> normalizamos la tabla original y de ahí sacamos el modelo E/R.</li>
+      <li><b>Paso 2:</b> pasamos el E/R a tablas (modelo relacional).</li>
+      <li><b>Paso 3:</b> volvemos a comprobar la normalización sobre las tablas finales (lo pide el enunciado y confirma que el diseño es correcto).</li>
+      <li><b>Paso 4:</b> creamos la base de datos y cargamos los datos.</li>
+    </ol>
+  </div>
+
+  <h2>Vocabulario mínimo</h2>
+  <table>
+    <tr><th style="width:30%">Término</th><th>Qué significa (con un ejemplo nuestro)</th></tr>
+    <tr><td><b>Entidad</b></td><td>Una "cosa" de la que queremos guardar información. Ej.: <i>Alumno</i>, <i>Promoción</i>, <i>Proyecto</i>. Se convierte en una tabla.</td></tr>
+    <tr><td><b>Atributo</b></td><td>Una característica de una entidad. Ej.: el <i>email</i> de un alumno. Se convierte en una columna.</td></tr>
+    <tr><td><b>Relación</b></td><td>Cómo se conectan dos entidades. Ej.: un alumno <i>realiza</i> proyectos.</td></tr>
+    <tr><td><b>Cardinalidad</b></td><td>Cuántos elementos participan en una relación. <b>1:N</b> = uno con muchos; <b>N:M</b> = muchos con muchos (un alumno hace muchos proyectos y un proyecto lo hacen muchos alumnos).</td></tr>
+    <tr><td><b>Clave primaria (PK)</b></td><td>Columna (o columnas) que identifica cada fila de forma única. Ej.: <code>alumnos.id</code>.</td></tr>
+    <tr><td><b>Clave foránea (FK)</b></td><td>Columna que apunta a la PK de otra tabla, y así "enlaza" tablas. Ej.: <code>alumnosProyectos.id_alumnos</code> apunta a <code>alumnos.id</code>.</td></tr>
+    <tr><td><b>Redundancia</b></td><td>Guardar el mismo dato varias veces. Es lo que queremos eliminar.</td></tr>
+    <tr><td><b>Normalización</b></td><td>Proceso por pasos (1FN, 2FN, 3FN) para repartir los datos en tablas sin redundancia.</td></tr>
+  </table>
+</section>
+
+<!-- ============ 1. DATOS ============ -->
+<section class="page">
+  <h1>1 · Los datos de partida</h1>
+  <p>Tenemos 5 ficheros CSV (separados por <code>;</code>) en la carpeta <code>data/</code>:</p>
+  <table>
+    <tr><th>Fichero</th><th class="num">Filas</th><th>Promoción</th><th>Campus</th><th>Proyectos que aparecen como columnas</th></tr>
+    <tr><td><code>clase_1.csv</code></td><td class="num">15</td><td>Septiembre (18/09/2023)</td><td>Madrid</td><td>HLF, EDA, BBDD, ML, Deployment <span class="muted">(Data Science)</span></td></tr>
+    <tr><td><code>clase_2.csv</code></td><td class="num">10</td><td>Febrero (12/02/2024)</td><td>Madrid</td><td>HLF, EDA, BBDD, ML, Deployment <span class="muted">(Data Science)</span></td></tr>
+    <tr><td><code>clase_3.csv</code></td><td class="num">14</td><td>Septiembre (18/09/2023)</td><td>Madrid</td><td>WebDev, FrontEnd, Backend, React, FullSatck <span class="muted">(Full Stack)</span></td></tr>
+    <tr><td><code>clase_4.csv</code></td><td class="num">13</td><td>Febrero (12/02/2024)</td><td>Valencia</td><td>WebDev, FrontEnd, Backend, React, FullSatck <span class="muted">(Full Stack)</span></td></tr>
+    <tr><td><code>claustro.csv</code></td><td class="num">10</td><td colspan="3">Profesores: nombre, rol (TA / LI), vertical, promoción, campus y modalidad</td></tr>
+  </table>
+
+  <h3>Así es un CSV de alumnos (primeras filas de <code>clase_1.csv</code>)</h3>
+  <table class="small">
+    <tr><th>Nombre</th><th>Email</th><th>Promoción</th><th>Fecha_comienzo</th><th>Campus</th><th>Proyecto_HLF</th><th>Proyecto_EDA</th><th>Proyecto_BBDD</th><th>Proyecto_ML</th><th>Proyecto_Deployment</th></tr>
+    <tr><td>Jafet Casals</td><td>Jafet_Casals@gmail.com</td><td>Septiembre</td><td>18/09/2023</td><td>Madrid</td><td>Apto</td><td>No Apto</td><td>Apto</td><td>Apto</td><td>Apto</td></tr>
+    <tr><td>Jorge Manzanares</td><td>Jorge_Manzanares@gmail.com</td><td>Septiembre</td><td>18/09/2023</td><td>Madrid</td><td>Apto</td><td>No Apto</td><td>Apto</td><td>Apto</td><td>Apto</td></tr>
+    <tr><td>Onofre Adadia</td><td>Onofre_Adadia@gmail.com</td><td>Septiembre</td><td>18/09/2023</td><td>Madrid</td><td>Apto</td><td>Apto</td><td>Apto</td><td>No Apto</td><td>Apto</td></tr>
+    <tr><td colspan="10" class="muted">… 12 filas más</td></tr>
+  </table>
+
+  <h3>Así es el CSV del claustro (<code>claustro.csv</code>)</h3>
+  <table class="small">
+    <tr><th>Nombre</th><th>Rol</th><th>Vertical</th><th>Promocion</th><th>Campus</th><th>Modalidad</th></tr>
+    <tr><td>Noa Yáñez</td><td>TA</td><td>DS</td><td>Septiembre</td><td>Madrid</td><td>Presencial</td></tr>
+    <tr><td>Saturnina Benitez</td><td>TA</td><td>DS</td><td>Septiembre</td><td>Madrid</td><td>Presencial</td></tr>
+    <tr><td>Mario Prats</td><td>LI</td><td>FS</td><td>Febrero</td><td>Valencia</td><td>Online</td></tr>
+    <tr><td colspan="6" class="muted">… 7 filas más · TA = Teacher Assistant, LI = Lead Instructor</td></tr>
+  </table>
+
+  <div class="box">
+    <b class="t">Cosas que nos fijamos al mirar los datos</b>
+    <ul style="margin:0">
+      <li>Una <b>promoción</b> queda definida por su <b>fecha de comienzo + campus + vertical</b>. Por ejemplo, "Septiembre 2023" existe en Madrid DS, Madrid FS y Valencia FS: son promociones distintas.</li>
+      <li>La <b>vertical</b> (DS o FS) no viene escrita en los CSV de alumnos: se deduce de los proyectos (HLF, EDA… son de Data Science; WebDev, React… de Full Stack).</li>
+      <li>El claustro menciona <b>dos promociones que no tienen alumnos</b> en los CSV: Valencia FS Septiembre y Madrid FS Febrero. Las creamos igualmente, porque tienen profesores.</li>
+      <li>El nombre del proyecto <code>FullSatck</code> viene así (con la errata) en las cabeceras de los CSV y lo hemos mantenido tal cual.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 2. NORMALIZACIÓN + E/R ============ -->
+<section class="page">
+  <h1>2 · Paso 1: Normalización y modelo E/R</h1>
+
+  <h2>2.1 ¿Qué problemas tiene la tabla original?</h2>
+  <p>Si metiéramos los CSV tal cual en una sola tabla, tendríamos esto (fíjate en lo que se repite):</p>
+  <table class="small">
+    <tr><th>Nombre</th><th>Email</th><th>Promoción</th><th>Fecha_comienzo</th><th>Campus</th><th>Proyecto_HLF</th><th>Proyecto_EDA</th><th>…</th></tr>
+    <tr><td>Jafet Casals</td><td>Jafet_Casals@…</td><td class="bad">Septiembre</td><td class="bad">18/09/2023</td><td class="bad">Madrid</td><td>Apto</td><td>No Apto</td><td>…</td></tr>
+    <tr><td>Jorge Manzanares</td><td>Jorge_Manzanares@…</td><td class="bad">Septiembre</td><td class="bad">18/09/2023</td><td class="bad">Madrid</td><td>Apto</td><td>No Apto</td><td>…</td></tr>
+    <tr><td>Onofre Adadia</td><td>Onofre_Adadia@…</td><td class="bad">Septiembre</td><td class="bad">18/09/2023</td><td class="bad">Madrid</td><td>Apto</td><td>Apto</td><td>…</td></tr>
+  </table>
+
+  <table>
+    <tr><th style="width:28%">Problema</th><th>Ejemplo con nuestros datos</th></tr>
+    <tr><td><b>Redundancia</b></td><td>"Septiembre · 18/09/2023 · Madrid" se repite en los 15 alumnos de <code>clase_1</code>.</td></tr>
+    <tr><td><b>Grupos repetidos</b></td><td><code>Proyecto_HLF</code>, <code>Proyecto_EDA</code>… son el mismo dato (una nota) en 5 columnas. Si mañana hay un proyecto nuevo, hay que <i>cambiar la estructura</i> de la tabla.</td></tr>
+    <tr><td><b>Anomalía de actualización</b></td><td>Si la promoción cambia su fecha de inicio, hay que cambiarla en 15 filas. Si se olvida una, los datos se contradicen.</td></tr>
+    <tr><td><b>Anomalía de inserción</b></td><td>No podemos dar de alta la promoción "Valencia FS Septiembre" porque todavía no tiene alumnos.</td></tr>
+    <tr><td><b>Anomalía de borrado</b></td><td>Si borramos al último alumno de una promoción, perdemos también los datos de esa promoción.</td></tr>
+  </table>
+  <p>La normalización resuelve todo esto en tres pasos. Cada forma normal (FN) exige cumplir la anterior.</p>
+
+  <h2>2.2 Primera Forma Normal (1FN): un solo valor por celda, sin columnas repetidas</h2>
+  <p><b>Regla:</b> cada celda guarda un único valor y no hay grupos de columnas que signifiquen lo mismo.</p>
+  <p><b>Qué hacemos:</b> las 5 columnas <code>Proyecto_X</code> se convierten en <b>filas</b>: una fila por cada alumno y proyecto.</p>
+  <div class="grid2">
+    <div>
+      <p class="small muted" style="margin:0">Antes (1 fila por alumno, 5 columnas de notas)</p>
+      <table class="small">
+        <tr><th>Email</th><th>Proyecto_HLF</th><th>Proyecto_EDA</th><th>…</th></tr>
+        <tr><td>Jafet_Casals@…</td><td>Apto</td><td>No Apto</td><td>…</td></tr>
+      </table>
+    </div>
+    <div>
+      <p class="small muted" style="margin:0">Después (1 fila por alumno y proyecto)</p>
+      <table class="small">
+        <tr><th>Email</th><th>Proyecto</th><th>Evaluación</th></tr>
+        <tr><td>Jafet_Casals@…</td><td>HLF</td><td>Apto</td></tr>
+        <tr><td>Jafet_Casals@…</td><td>EDA</td><td>No Apto</td></tr>
+        <tr><td>Jafet_Casals@…</td><td>BBDD</td><td>Apto</td></tr>
+      </table>
+    </div>
+  </div>
+  <p>Ahora, añadir un proyecto nuevo es añadir filas, no columnas. También convertimos las fechas de texto
+     (<code>18/09/2023</code>) al formato de fecha estándar (<code>2023-09-18</code>) para guardarlas como <code>DATE</code>.</p>
+</section>
+
+<section>
+  <h2>2.3 Segunda Forma Normal (2FN): cada dato depende de la clave entera</h2>
+  <p><b>Regla:</b> si la clave de una tabla está formada por varias columnas, ningún otro dato puede depender solo de una parte de ella.</p>
+  <p>En la tabla de 1FN, la clave es <b>(alumno, proyecto)</b>: hacen falta las dos cosas para saber una evaluación. Pero hay datos que dependen solo de una parte:</p>
+  <ul>
+    <li><b>Nombre y email</b> dependen solo del <b>alumno</b> → van a la tabla <code>alumnos</code>.</li>
+    <li><b>El nombre del proyecto</b> depende solo del <b>proyecto</b> → va a la tabla <code>proyectos</code>.</li>
+    <li><b>La evaluación</b> sí depende de los dos (de qué alumno y de qué proyecto) → se queda en la tabla intermedia <code>alumnosProyectos</code>.</li>
+  </ul>
+  <div class="grid2">
+    <table class="small">
+      <tr><th colspan="3">alumnos</th></tr>
+      <tr><th>id</th><th>nombre</th><th>email</th></tr>
+      <tr><td>1</td><td>Jafet Casals</td><td>Jafet_Casals@…</td></tr>
+      <tr><td>2</td><td>Jorge Manzanares</td><td>Jorge_Manzanares@…</td></tr>
+    </table>
+    <table class="small">
+      <tr><th colspan="2">proyectos</th></tr>
+      <tr><th>id</th><th>nombre</th></tr>
+      <tr><td>1</td><td>HLF</td></tr>
+      <tr><td>2</td><td>EDA</td></tr>
+    </table>
+  </div>
+  <table class="small" style="width:60%">
+    <tr><th colspan="3">alumnosProyectos</th></tr>
+    <tr><th>id_alumnos</th><th>id_proyectos</th><th>evaluacion</th></tr>
+    <tr><td>1</td><td>1</td><td>Apto</td></tr>
+    <tr><td>1</td><td>2</td><td>No Apto</td></tr>
+  </table>
+  <p>Fíjate en que ya no escribimos "Jafet Casals" ni "HLF" muchas veces: usamos su <b>id</b>, que es un número corto.</p>
+
+  <h2>2.4 Tercera Forma Normal (3FN): nada depende de algo que no sea la clave</h2>
+  <p><b>Regla:</b> un dato no puede depender de otro dato que no sea la clave (dependencia "transitiva").</p>
+  <p>En la tabla de alumnos todavía tendríamos promoción, fecha de comienzo y campus. Pero:</p>
+  <ul>
+    <li>La <b>fecha de comienzo</b>, el <b>campus</b> y la <b>vertical</b> no son datos del alumno: son datos de la <b>promoción</b>.
+        Alumno → promoción → fecha. Esa cadena es la dependencia transitiva.</li>
+    <li>Por eso sacamos todo eso a una tabla <code>promocion</code>, y relacionamos cada alumno con su promoción mediante la tabla <code>alumnosPromocion</code>.</li>
+    <li>Igual con los profesores: su nombre, rol y modalidad van a <code>claustro</code>; a qué promoción dan clase va en <code>promocionClaustro</code>.</li>
+    <li>Y qué proyectos tiene cada promoción va en <code>promocionProyectos</code>.</li>
+  </ul>
+  <div class="grid2">
+    <table class="small">
+      <tr><th colspan="5">promocion</th></tr>
+      <tr><th>id</th><th>año</th><th>fecha_comienzo</th><th>campus</th><th>vertical</th></tr>
+      <tr><td>1</td><td>2023</td><td>2023-09-18</td><td>Madrid</td><td>DS</td></tr>
+      <tr><td>2</td><td>2024</td><td>2024-02-12</td><td>Madrid</td><td>DS</td></tr>
+    </table>
+    <table class="small">
+      <tr><th colspan="2">alumnosPromocion</th></tr>
+      <tr><th>id_promocion</th><th>id_alumnos</th></tr>
+      <tr><td>1</td><td>1</td></tr>
+      <tr><td>1</td><td>2</td></tr>
+    </table>
+  </div>
+  <div class="box ok">
+    <b class="t">Resultado de la normalización</b>
+    "Madrid · 18/09/2023 · DS" se guarda <b>una sola vez</b> (en la promoción 1). Si cambia la fecha, se cambia en un único sitio.
+    Podemos crear promociones sin alumnos, y borrar un alumno no borra su promoción.
+  </div>
+</section>
+
+<section>
+  <h2>2.5 De la normalización salen las entidades</h2>
+  <p>Cada tabla "principal" que ha salido de normalizar es una <b>entidad</b> del modelo E/R. Las tablas intermedias son <b>relaciones</b>:</p>
+  <table>
+    <tr><th>Entidad</th><th>Atributos</th><th>De dónde sale</th></tr>
+    <tr><td><b>Alumnos</b></td><td>Id, Nombre, Email</td><td>Columnas Nombre y Email de <code>clase_X.csv</code></td></tr>
+    <tr><td><b>Promoción</b></td><td>Id, Año promoción, Fecha de comienzo, Campus, Vertical</td><td>Columnas Promoción, Fecha_comienzo y Campus; la vertical se deduce de los proyectos</td></tr>
+    <tr><td><b>Proyectos</b></td><td>Id, Nombre proyecto</td><td>Cabeceras <code>Proyecto_X</code> de los CSV</td></tr>
+    <tr><td><b>Claustro</b></td><td>Id, Nombre, Rol, Modalidad</td><td><code>claustro.csv</code></td></tr>
+  </table>
+  <table>
+    <tr><th>Relación</th><th>Entre</th><th>Tipo</th><th>Se lee…</th></tr>
+    <tr><td><b>Pertenecen</b></td><td>Alumnos – Promoción</td><td>N:M</td><td>Un alumno pertenece a una o varias promociones; una promoción tiene muchos alumnos.</td></tr>
+    <tr><td><b>Realizan</b></td><td>Alumnos – Proyectos</td><td>N:M</td><td>Un alumno realiza muchos proyectos; un proyecto lo realizan muchos alumnos. Tiene el atributo <b>Evaluación</b>.</td></tr>
+    <tr><td><b>Tienen</b></td><td>Promoción – Proyectos</td><td>N:M</td><td>Una promoción tiene varios proyectos; un proyecto se da en varias promociones.</td></tr>
+    <tr><td><b>Tiene</b></td><td>Promoción – Claustro</td><td>N:M</td><td>Una promoción tiene varios profesores; un profesor puede estar en varias promociones.</td></tr>
+  </table>
+  <div class="box">
+    <b class="t">¿Por qué Alumnos–Promoción es N:M y no 1:N?</b>
+    Con los datos actuales cada alumno está en una sola promoción, pero en la realidad un alumno puede hacer más de un bootcamp
+    (por ejemplo, Data Science y después Full Stack). Con N:M la base de datos ya está preparada para eso sin cambiar nada.
+  </div>
+
+</section>
+
+<section>
+  <h2>2.6 El diagrama Entidad-Relación</h2>
+  <figure>
+    <div class="crop"><img src="img/modelo_er.png" alt="Diagrama E/R"></div>
+    <figcaption>Figura 1 · Modelo Entidad-Relación del proyecto (draw.io)</figcaption>
+  </figure>
+  <p class="small"><b>Cómo se lee:</b> rectángulo = entidad · elipse = atributo (<u>subrayado</u> = identificador, futura PK) · rombo = relación · elipse colgando de un rombo = atributo de la relación (<b>Evaluación</b> no es del alumno ni del proyecto, sino de "este alumno en este proyecto") · N:M = tipo de relación.</p>
+</section>
+
+<!-- ============ 3. MODELO RELACIONAL ============ -->
+<section class="page">
+  <h1>3 · Paso 2: Modelo lógico (relacional)</h1>
+  <p>El modelo lógico traduce el diagrama E/R a <b>tablas</b>, con sus columnas, claves primarias (PK) y claves foráneas (FK).
+     Como vamos a usar PostgreSQL, que es una base de datos relacional, el modelo lógico es el <b>modelo relacional</b>.</p>
+
+  <h2>3.1 Reglas para pasar del E/R a tablas</h2>
+  <table>
+    <tr><th style="width:30%">En el E/R hay…</th><th>En el modelo relacional se convierte en…</th></tr>
+    <tr><td>Una <b>entidad</b></td><td>Una tabla. Su identificador pasa a ser la <b>PK</b>.</td></tr>
+    <tr><td>Un <b>atributo</b></td><td>Una columna de esa tabla.</td></tr>
+    <tr><td>Una relación <b>1:N</b></td><td>No crea tabla: la PK del lado "1" se copia como <b>FK</b> en la tabla del lado "N".</td></tr>
+    <tr><td>Una relación <b>N:M</b></td><td>Crea una <b>tabla intermedia</b> con las PK de las dos entidades. Juntas forman su PK, y cada una es FK a su tabla. Los atributos de la relación (como Evaluación) van en esta tabla.</td></tr>
+  </table>
+
+  <h2>3.2 Aplicación a nuestro modelo</h2>
+  <table>
+    <tr><th>Elemento del E/R</th><th>Tabla resultante</th></tr>
+    <tr><td>Entidad Alumnos</td><td><code>alumnos</code></td></tr>
+    <tr><td>Entidad Promoción</td><td><code>promocion</code></td></tr>
+    <tr><td>Entidad Proyectos</td><td><code>proyectos</code></td></tr>
+    <tr><td>Entidad Claustro</td><td><code>claustro</code></td></tr>
+    <tr><td>Relación N:M Pertenecen</td><td><code>alumnosPromocion</code></td></tr>
+    <tr><td>Relación N:M Realizan (+ Evaluación)</td><td><code>alumnosProyectos</code> (con la columna <code>evaluacion</code>)</td></tr>
+    <tr><td>Relación N:M Tienen</td><td><code>promocionProyectos</code></td></tr>
+    <tr><td>Relación N:M Tiene</td><td><code>promocionClaustro</code></td></tr>
+  </table>
+  <p>Como todas las relaciones son N:M, tenemos <b>4 tablas de entidades + 4 tablas intermedias = 8 tablas</b>.</p>
+
+  <h2>3.3 Esquema relacional (en texto)</h2>
+  <p class="small muted">Formato: tabla (columnas). <span class="tag pk">PK</span> clave primaria · <span class="tag fk">FK</span> clave foránea.</p>
+  <table class="small">
+    <tr><th>Tabla</th><th>Columnas</th></tr>
+    <tr><td><code>promocion</code></td><td><b>id</b> <span class="tag pk">PK</span>, año, fecha_comienzo, campus, vertical</td></tr>
+    <tr><td><code>alumnos</code></td><td><b>id</b> <span class="tag pk">PK</span>, nombre, email</td></tr>
+    <tr><td><code>proyectos</code></td><td><b>id</b> <span class="tag pk">PK</span>, nombre</td></tr>
+    <tr><td><code>claustro</code></td><td><b>id</b> <span class="tag pk">PK</span>, nombre, rol, modalidad</td></tr>
+    <tr><td><code>alumnosPromocion</code></td><td><b>id_promocion</b> <span class="tag pk">PK</span> <span class="tag fk">FK → promocion</span>, <b>id_alumnos</b> <span class="tag pk">PK</span> <span class="tag fk">FK → alumnos</span></td></tr>
+    <tr><td><code>alumnosProyectos</code></td><td><b>id_alumnos</b> <span class="tag pk">PK</span> <span class="tag fk">FK → alumnos</span>, <b>id_proyectos</b> <span class="tag pk">PK</span> <span class="tag fk">FK → proyectos</span>, evaluacion</td></tr>
+    <tr><td><code>promocionProyectos</code></td><td><b>id_promocion</b> <span class="tag pk">PK</span> <span class="tag fk">FK → promocion</span>, <b>id_proyectos</b> <span class="tag pk">PK</span> <span class="tag fk">FK → proyectos</span></td></tr>
+    <tr><td><code>promocionClaustro</code></td><td><b>id_claustro</b> <span class="tag pk">PK</span> <span class="tag fk">FK → claustro</span>, <b>id_promocion</b> <span class="tag pk">PK</span> <span class="tag fk">FK → promocion</span></td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>3.4 Diagrama del modelo relacional</h2>
+  <figure>
+<img src="img/modelo_logico.png" alt="Modelo lógico">
+    <figcaption>Figura 2 · Modelo lógico (relacional) del proyecto en draw.io: 8 tablas, con sus claves primarias (PK) y foráneas (FK)</figcaption>
+  </figure>
+  <div class="box">
+    <b class="t">Cómo leer una tabla intermedia</b>
+    <code>alumnosProyectos</code> tiene 260 filas: una por cada pareja alumno–proyecto (52 alumnos × 5 proyectos).
+    La fila <code>(1, 2, 'No Apto')</code> significa: "el alumno 1 (Jafet Casals), en el proyecto 2 (EDA), tiene No Apto".
+    La PK compuesta <code>(id_alumnos, id_proyectos)</code> impide que un alumno tenga dos notas en el mismo proyecto.
+  </div>
+  <h3>Tipos de datos elegidos</h3>
+  <table class="small">
+    <tr><th>Columna</th><th>Tipo</th><th>Motivo</th></tr>
+    <tr><td><code>id</code> (todas)</td><td>INTEGER autoincremental</td><td>La base de datos genera el número sola al insertar.</td></tr>
+    <tr><td><code>fecha_comienzo</code></td><td>DATE</td><td>Permite ordenar y filtrar por fechas (no es un texto).</td></tr>
+    <tr><td><code>nombre</code>, <code>campus</code>, <code>rol</code>, <code>evaluacion</code></td><td>VARCHAR(n)</td><td>Texto corto con un tamaño máximo.</td></tr>
+    <tr><td><code>email</code></td><td>TEXT</td><td>Texto sin límite de longitud.</td></tr>
+    <tr><td><code>modalidad</code></td><td>ENUM('presencial','online') en MySQL · VARCHAR + CHECK en PostgreSQL</td><td>Solo admite esos dos valores.</td></tr>
+  </table>
+</section>
+
+<!-- ============ 4. VERIFICACIÓN ============ -->
+<section class="page">
+  <h1>4 · Paso 3: Verificación de la normalización</h1>
+  <p>El enunciado pide analizar los datos y normalizarlos. Ya lo hicimos en el Paso 1 para diseñar el modelo; ahora
+     <b>comprobamos sobre las tablas finales</b> que cumplen las tres formas normales. Si alguna fallara, tendríamos que volver a tocar el E/R.</p>
+
+  <table class="small">
+    <tr><th>Tabla</th><th>1FN<br><span class="muted">valores únicos, sin grupos repetidos</span></th><th>2FN<br><span class="muted">todo depende de la PK entera</span></th><th>3FN<br><span class="muted">nada depende de algo que no sea la PK</span></th></tr>
+    <tr><td><code>promocion</code></td><td class="good">✔</td><td class="good">✔ PK simple</td><td class="good">✔ (ver nota sobre "año")</td></tr>
+    <tr><td><code>alumnos</code></td><td class="good">✔</td><td class="good">✔ PK simple</td><td class="good">✔ ya no guarda datos de la promoción</td></tr>
+    <tr><td><code>proyectos</code></td><td class="good">✔</td><td class="good">✔ PK simple</td><td class="good">✔</td></tr>
+    <tr><td><code>claustro</code></td><td class="good">✔</td><td class="good">✔ PK simple</td><td class="good">✔</td></tr>
+    <tr><td><code>alumnosProyectos</code></td><td class="good">✔ una nota por fila</td><td class="good">✔ la evaluación depende de alumno <i>y</i> proyecto</td><td class="good">✔</td></tr>
+    <tr><td><code>alumnosPromocion</code></td><td class="good">✔</td><td class="good">✔ solo tiene la PK</td><td class="good">✔</td></tr>
+    <tr><td><code>promocionProyectos</code></td><td class="good">✔</td><td class="good">✔ solo tiene la PK</td><td class="good">✔</td></tr>
+    <tr><td><code>promocionClaustro</code></td><td class="good">✔</td><td class="good">✔ solo tiene la PK</td><td class="good">✔</td></tr>
+  </table>
+  <div class="box ok"><b class="t">Conclusión</b>Las 8 tablas cumplen la 3FN, así que el diseño de los pasos 1 y 2 es correcto.</div>
+
+  <h2>Cosas que revisamos durante la verificación</h2>
+  <div class="box">
+    <b class="t">Error que encontramos y corregimos: la promoción guardada dos veces</b>
+    En una versión anterior, la tabla <code>alumnos</code> tenía una columna <code>id_promocion</code> (relación 1:N) <b>y además</b>
+    existía la tabla <code>alumnosPromocion</code>. Así, la promoción de cada alumno estaba guardada en dos sitios, que es justo la
+    redundancia que queremos evitar. Lo corregimos dejando solo la relación N:M (<code>alumnosPromocion</code>) y quitando la
+    columna de <code>alumnos</code>.
+  </div>
+  <div class="box warn">
+    <b class="t">Decisión consciente: "año" en promoción</b>
+    El año (2023) se puede sacar de <code>fecha_comienzo</code> (2023-09-18), así que estrictamente es un dato derivado.
+    Lo mantenemos porque facilita las consultas por año, pero hay que tener en cuenta que, si se cambia la fecha, también hay que cambiar el año.
+    Para que la base de datos sea más estricta se podría quitar y calcularlo con <code>EXTRACT(YEAR FROM fecha_comienzo)</code>.
+  </div>
+  <div class="box warn">
+    <b class="t">Decisión consciente: modalidad solo para el claustro</b>
+    Solo <code>claustro.csv</code> trae la modalidad (Presencial / Online), así que de momento la guardamos únicamente para el profesorado.
+    En una promoción conviven profesores presenciales (los TA) y online (los LI), por eso <b>no</b> la pusimos en <code>promocion</code>.
+  </div>
+
+  <h2>Integridad de los datos</h2>
+  <ul>
+    <li><b>Claves primarias</b> en todas las tablas: no puede haber dos filas iguales.</li>
+    <li><b>Claves foráneas</b> en todas las tablas intermedias: no se puede poner una nota a un alumno o a un proyecto que no existan.</li>
+    <li><b>PK compuestas</b> en las tablas N:M: un alumno no puede estar dos veces en la misma promoción, ni tener dos notas en el mismo proyecto.</li>
+    <li><b>Tipos adecuados</b>: fechas como <code>DATE</code> y modalidad restringida a valores válidos.</li>
+  </ul>
+</section>
+
+<!-- ============ 5. CREACIÓN ============ -->
+<section class="page">
+  <h1>5 · Paso 4: Creación de la base de datos</h1>
+  <p>Primero la creamos en <b>MySQL Workbench</b> (en local) para probar el diseño. Después la pasamos a <b>PostgreSQL</b>,
+     que es lo que pide el enunciado, y la alojamos en <b>Supabase</b>, un servicio gratuito de PostgreSQL en la nube
+     (el enunciado sugiere Render; los dos sirven porque los dos son PostgreSQL).</p>
+
+  <h2>5.1 Script de creación de tablas</h2>
+  <p>El orden importa: primero se crean las tablas <b>sin FK</b> (promoción, alumnos, proyectos, claustro) y después las intermedias,
+     porque una FK solo puede apuntar a una tabla que ya existe. Extracto del script MySQL:</p>
+<pre><span class="k">CREATE TABLE</span> promocion (
+    id <span class="k">INTEGER PRIMARY KEY AUTO_INCREMENT</span>,
+    año <span class="k">INTEGER</span>,
+    fecha_comienzo <span class="k">DATE</span>,
+    campus <span class="k">VARCHAR</span>(20),
+    vertical <span class="k">VARCHAR</span>(5)
+);
+<span class="k">CREATE TABLE</span> alumnos (
+    id <span class="k">INTEGER PRIMARY KEY AUTO_INCREMENT</span>,
+    nombre <span class="k">VARCHAR</span>(20),
+    email <span class="k">TEXT</span>
+);
+<span class="c">-- Tabla intermedia N:M con atributo propio (evaluacion)</span>
+<span class="k">CREATE TABLE</span> alumnosProyectos (
+    id_alumnos <span class="k">INTEGER</span>,
+    id_proyectos <span class="k">INTEGER</span>,
+    evaluacion <span class="k">VARCHAR</span>(20),
+    <span class="k">PRIMARY KEY</span> (id_alumnos, id_proyectos),
+    <span class="k">FOREIGN KEY</span> (id_alumnos) <span class="k">REFERENCES</span> alumnos(id),
+    <span class="k">FOREIGN KEY</span> (id_proyectos) <span class="k">REFERENCES</span> proyectos(id)
+);
+<span class="k">CREATE TABLE</span> claustro (
+    id <span class="k">INTEGER PRIMARY KEY AUTO_INCREMENT</span>,
+    nombre <span class="k">VARCHAR</span>(30),
+    rol <span class="k">VARCHAR</span>(20),
+    modalidad <span class="k">ENUM</span>(<span class="s">"presencial"</span>,<span class="s">"online"</span>)
+);
+<span class="c">-- ... y así el resto de tablas intermedias (alumnosPromocion, promocionProyectos, promocionClaustro)</span></pre>
+
+  <h2>5.2 Carga de los datos (INSERT)</h2>
+  <p>Los <code>INSERT</code> se generan a partir de los 5 CSV, aplicando la normalización del Paso 1:</p>
+  <ol>
+    <li><b>Promociones:</b> cada combinación distinta de fecha + campus + vertical es una promoción (4 de los CSV de alumnos + 2 que solo aparecen en el claustro = <b>6</b>).</li>
+    <li><b>Proyectos:</b> se sacan de las cabeceras <code>Proyecto_X</code> (<b>10</b>).</li>
+    <li><b>Alumnos:</b> nombre y email de cada fila (<b>52</b>), y su promoción en <code>alumnosPromocion</code> (<b>52</b>).</li>
+    <li><b>Evaluaciones:</b> cada celda Apto / No Apto pasa a ser una fila de <code>alumnosProyectos</code> (52 × 5 = <b>260</b>).</li>
+    <li><b>Proyectos de cada promoción:</b> <code>promocionProyectos</code> (4 promociones × 5 = <b>20</b>).</li>
+    <li><b>Claustro:</b> <b>10</b> profesores con su modalidad, y su promoción en <code>promocionClaustro</code> (<b>10</b>).</li>
+  </ol>
+<pre><span class="k">INSERT INTO</span> promocion (id, año, fecha_comienzo, campus, vertical) <span class="k">VALUES</span>
+    (1, 2023, <span class="s">'2023-09-18'</span>, <span class="s">'Madrid'</span>, <span class="s">'DS'</span>),
+    (2, 2024, <span class="s">'2024-02-12'</span>, <span class="s">'Madrid'</span>, <span class="s">'DS'</span>),
+    ...
+<span class="k">INSERT INTO</span> alumnosProyectos (id_alumnos, id_proyectos, evaluacion) <span class="k">VALUES</span>
+    (1, 1, <span class="s">'Apto'</span>),      <span class="c">-- Jafet Casals · HLF</span>
+    (1, 2, <span class="s">'No Apto'</span>),   <span class="c">-- Jafet Casals · EDA</span>
+    ...</pre>
+</section>
+
+<section>
+<div class="keep">
+  <h2>5.3 De MySQL a PostgreSQL</h2>
+  <p>MySQL y PostgreSQL usan casi el mismo SQL, pero hay diferencias que hacen fallar el script si no se adaptan:</p>
+  <table class="small">
+    <tr><th style="width:32%">En MySQL</th><th style="width:34%">En PostgreSQL</th><th>Por qué</th></tr>
+    <tr><td><code>DROP/CREATE DATABASE</code>, <code>USE</code>, <code>SET NAMES</code></td><td>Se quitan</td><td>Supabase ya nos da una base de datos (<code>postgres</code>) en UTF-8.</td></tr>
+    <tr><td><code>AUTO_INCREMENT</code></td><td><code>GENERATED BY DEFAULT AS IDENTITY</code></td><td>Es la forma estándar de PostgreSQL de numerar automáticamente.</td></tr>
+    <tr><td><code>ENUM("presencial","online")</code></td><td><code>VARCHAR(20) CHECK (modalidad IN ('presencial','online'))</code></td><td>PostgreSQL no admite ENUM dentro del CREATE TABLE, y las comillas dobles significan "nombre de columna", no texto.</td></tr>
+    <tr><td>Comillas invertidas <code>`id`</code></td><td>Sin comillas</td><td>PostgreSQL no las entiende.</td></tr>
+    <tr><td><code>SHOW TABLES</code></td><td>Se quita</td><td>No existe en PostgreSQL (las tablas se ven en el Table Editor).</td></tr>
+    <tr><td>—</td><td><code>DROP TABLE IF EXISTS … CASCADE</code> al principio</td><td>Para poder ejecutar el script varias veces sin errores.</td></tr>
+    <tr><td>—</td><td><code>BEGIN; … COMMIT;</code></td><td>Si algo falla, no se queda nada a medias.</td></tr>
+    <tr><td>—</td><td><code>SELECT setval(...)</code> al final</td><td>Como insertamos los id a mano, hay que avisar al contador de que siga por el 53 (y no por el 1).</td></tr>
+  </table>
+</div>
+  <p>Un detalle: PostgreSQL guarda los nombres sin comillas en minúsculas, así que <code>alumnosProyectos</code> aparece como
+     <code>alumnosproyectos</code>. Las consultas funcionan igual escribiéndolo de cualquiera de las dos formas.</p>
+
+  <h2>5.4 Paso a paso en Supabase</h2>
+  <ol>
+    <li><span class="step">1</span>Entrar en <b>supabase.com</b>, crear un proyecto nuevo (nombre, contraseña de la base de datos y región).</li>
+    <li><span class="step">2</span>En el menú lateral, abrir <b>SQL Editor</b> → <b>New query</b>.</li>
+    <li><span class="step">3</span>Pegar el contenido completo de <code>ProyectoGrupal_PostgreSQL.sql</code> y pulsar <b>Run</b>.</li>
+    <li><span class="step">4</span>Comprobar el resultado de la consulta de recuento (abajo). Las tablas aparecen también en <b>Table Editor</b>.</li>
+    <li><span class="step">5</span>Para conectarse desde otras aplicaciones (Python, DBeaver, Power BI…), pulsar <b>Connect</b> y copiar la cadena de conexión.
+        <span class="muted">La contraseña no se comparte en el repositorio.</span></li>
+  </ol>
+
+<div class="keep">
+  <p><b>Resultado en Supabase:</b> el <i>Schema Visualizer</i> (menú Database) dibuja automáticamente las 8 tablas y sus relaciones a partir de las claves foráneas. Es el mismo modelo relacional de la Figura 2.</p>
+  <figure style="width:78%;margin-left:auto;margin-right:auto">
+    <img src="img/supabase_esquema.jpg" alt="Figura 3 · Schema Visualizer de Supabase con las 8 tablas creadas">
+    <figcaption>Figura 3 · Schema Visualizer de Supabase con las 8 tablas creadas</figcaption>
+  </figure>
+</div>
+<div class="keep">
+  <p>El mismo esquema, obtenido con la <b>ingeniería inversa de MySQL Workbench</b> (<i>Database → Reverse Engineer</i>), se ve mucho mejor que en Supabase:
+     muestra el tipo de cada columna, marca las claves primarias y foráneas con iconos, y dibuja las relaciones con la
+     notación "pata de gallo" (una raya = 1, tres patas = N), así que se ve de un vistazo qué lado de cada relación es el "1" y cuál el "N".</p>
+  <figure style="width:85%;margin-left:auto;margin-right:auto">
+    <img src="img/workbench_ingenieria_inversa.png" alt="Ingeniería inversa en MySQL Workbench">
+    <figcaption>Figura 4 · Ingeniería inversa del esquema en MySQL Workbench</figcaption>
+  </figure>
+</div>
+<div class="keep">
+  <p>En el <i>Table Editor</i> se pueden ver y editar los datos de cada tabla. Por ejemplo, <code>claustro</code> con la modalidad de cada docente:</p>
+  <figure style="width:78%;margin-left:auto;margin-right:auto">
+    <img src="img/supabase_claustro.jpg" alt="Figura 5 · Tabla claustro en el Table Editor de Supabase">
+    <figcaption>Figura 5 · Tabla claustro en el Table Editor de Supabase</figcaption>
+  </figure>
+</div>
+  <h2>5.5 Comprobación: ¿se han cargado todos los datos?</h2>
+<pre><span class="k">SELECT</span> <span class="s">'promocion'</span> <span class="k">AS</span> tabla, <span class="k">COUNT</span>(*) <span class="k">AS</span> filas <span class="k">FROM</span> promocion
+<span class="k">UNION ALL SELECT</span> <span class="s">'alumnos'</span>, <span class="k">COUNT</span>(*) <span class="k">FROM</span> alumnos
+<span class="c">-- ... una línea por tabla</span></pre>
+  <figure style="width:78%;margin-left:auto;margin-right:auto">
+    <img src="img/supabase_recuento.jpg" alt="Figura 6 · Consulta de recuento ejecutada en el SQL Editor de Supabase">
+    <figcaption>Figura 6 · Consulta de recuento ejecutada en el SQL Editor de Supabase</figcaption>
+  </figure>
+  <div class="box ok"><b class="t">Total: 420 filas en 8 tablas</b>Coincide exactamente con lo que sale de los CSV.</div>
+</section>
+
+<!-- ============ 6. CONSULTAS ============ -->
+<section class="page">
+  <h1>6 · Consultas de demostración</h1>
+  <p>Estas consultas son las que enseñaremos en la presentación para demostrar que la base de datos funciona.
+     Todas usan <code>JOIN</code> para volver a juntar la información que la normalización repartió en varias tablas.</p>
+
+<div class="keep">
+  <h2>Consulta 1 · ¿Cuántos alumnos tiene cada promoción?</h2>
+<pre><span class="k">SELECT</span> pr.id, pr.vertical, pr.campus, pr.fecha_comienzo,
+       <span class="k">COUNT</span>(apr.id_alumnos) <span class="k">AS</span> num_alumnos
+<span class="k">FROM</span> promocion pr
+    <span class="k">LEFT JOIN</span> alumnosPromocion apr <span class="k">ON</span> pr.id = apr.id_promocion
+<span class="k">GROUP BY</span> pr.id, pr.vertical, pr.campus, pr.fecha_comienzo
+<span class="k">ORDER BY</span> pr.id;</pre>
+<table class="small"><tr><th>id</th><th>vertical</th><th>campus</th><th>fecha_comienzo</th><th>num_alumnos</th></tr><tr><td class="num">1</td><td>DS</td><td>Madrid</td><td>2023-09-18</td><td class="num">15</td></tr><tr><td class="num">2</td><td>DS</td><td>Madrid</td><td>2024-02-12</td><td class="num">10</td></tr><tr><td class="num">3</td><td>FS</td><td>Madrid</td><td>2023-09-18</td><td class="num">14</td></tr><tr><td class="num">4</td><td>FS</td><td>Valencia</td><td>2024-02-12</td><td class="num">13</td></tr><tr><td class="num">5</td><td>FS</td><td>Valencia</td><td>2023-09-18</td><td class="num">0</td></tr><tr><td class="num">6</td><td>FS</td><td>Madrid</td><td>2024-02-12</td><td class="num">0</td></tr></table><p class="small muted" style="margin-top:-2mm">6 filas</p>
+  <p class="small">Usamos <code>LEFT JOIN</code> para que también salgan las promociones 5 y 6, que tienen profesores pero aún no tienen alumnos.
+     Esto es justo lo que la tabla original no permitía (anomalía de inserción).</p>
+
+</div>
+<div class="keep">
+  <h2>Consulta 2 · Porcentaje de aptos por proyecto</h2>
+<pre><span class="k">SELECT</span> p.nombre <span class="k">AS</span> proyecto,
+       <span class="k">COUNT</span>(*) <span class="k">AS</span> evaluados,
+       <span class="k">SUM</span>(<span class="k">CASE WHEN</span> ap.evaluacion = <span class="s">'Apto'</span> <span class="k">THEN</span> 1 <span class="k">ELSE</span> 0 <span class="k">END</span>) <span class="k">AS</span> aptos,
+       <span class="k">ROUND</span>(100.0 * <span class="k">SUM</span>(<span class="k">CASE WHEN</span> ap.evaluacion = <span class="s">'Apto'</span> <span class="k">THEN</span> 1 <span class="k">ELSE</span> 0 <span class="k">END</span>) / <span class="k">COUNT</span>(*), 1) <span class="k">AS</span> porcentaje_aptos
+<span class="k">FROM</span> alumnosProyectos ap
+    <span class="k">JOIN</span> proyectos p <span class="k">ON</span> ap.id_proyectos = p.id
+<span class="k">GROUP BY</span> p.id, p.nombre
+<span class="k">ORDER BY</span> porcentaje_aptos <span class="k">DESC</span>;</pre>
+  <p class="small">EDA es el proyecto con más suspensos (56 % de aptos); ML y Deployment, los que más aprueban (88 %).</p>
+  <figure style="width:70%;margin-left:auto;margin-right:auto">
+    <img src="img/supabase_aptos.jpg" alt="Figura 7 · Consulta 2 ejecutada en Supabase">
+    <figcaption>Figura 7 · Consulta 2 ejecutada en Supabase</figcaption>
+  </figure>
+
+</div>
+</section>
+
+<section>
+<div class="keep">
+  <h2>Consulta 3 · Ficha de un alumno: promoción y notas</h2>
+<pre><span class="k">SELECT</span> a.nombre, pr.vertical, pr.campus, p.nombre <span class="k">AS</span> proyecto, ap.evaluacion
+<span class="k">FROM</span> alumnos a
+    <span class="k">JOIN</span> alumnosPromocion apr <span class="k">ON</span> a.id = apr.id_alumnos
+    <span class="k">JOIN</span> promocion pr       <span class="k">ON</span> apr.id_promocion = pr.id
+    <span class="k">JOIN</span> alumnosProyectos ap <span class="k">ON</span> a.id = ap.id_alumnos
+    <span class="k">JOIN</span> proyectos p        <span class="k">ON</span> ap.id_proyectos = p.id
+<span class="k">WHERE</span> a.nombre <span class="k">LIKE</span> <span class="s">'Jafet%'</span>
+<span class="k">ORDER BY</span> p.id;</pre>
+  <p class="small">Con 4 <code>JOIN</code> reconstruimos la fila original del CSV, pero ahora a partir de datos sin redundancia.</p>
+  <figure style="width:70%;margin-left:auto;margin-right:auto">
+    <img src="img/supabase_jafet.jpg" alt="Figura 8 · Consulta 3 ejecutada en Supabase">
+    <figcaption>Figura 8 · Consulta 3 ejecutada en Supabase</figcaption>
+  </figure>
+
+
+</div>
+<div class="keep">
+  <h2>Consulta 4 · Profesorado de cada promoción y su modalidad</h2>
+<pre><span class="k">SELECT</span> pr.id <span class="k">AS</span> promocion, pr.vertical, pr.campus, pr.fecha_comienzo,
+       c.nombre <span class="k">AS</span> docente, c.rol, c.modalidad
+<span class="k">FROM</span> promocion pr
+    <span class="k">JOIN</span> promocionClaustro pc <span class="k">ON</span> pr.id = pc.id_promocion
+    <span class="k">JOIN</span> claustro c           <span class="k">ON</span> pc.id_claustro = c.id
+<span class="k">ORDER BY</span> pr.id, c.rol <span class="k">DESC</span>, c.nombre;</pre>
+<table class="small"><tr><th>promocion</th><th>vertical</th><th>campus</th><th>fecha_comienzo</th><th>docente</th><th>rol</th><th>modalidad</th></tr><tr><td class="num">1</td><td>DS</td><td>Madrid</td><td>2023-09-18</td><td>Ariel Lledó</td><td>TA</td><td>presencial</td></tr><tr><td class="num">1</td><td>DS</td><td>Madrid</td><td>2023-09-18</td><td>Noa Yáñez</td><td>TA</td><td>presencial</td></tr><tr><td class="num">1</td><td>DS</td><td>Madrid</td><td>2023-09-18</td><td>Saturnina Benitez</td><td>TA</td><td>presencial</td></tr><tr><td class="num">1</td><td>DS</td><td>Madrid</td><td>2023-09-18</td><td>María Dolores Diaz</td><td>LI</td><td>online</td></tr><tr><td class="num">3</td><td>FS</td><td>Madrid</td><td>2023-09-18</td><td>Anna Feliu</td><td>TA</td><td>presencial</td></tr><tr><td class="num">3</td><td>FS</td><td>Madrid</td><td>2023-09-18</td><td>Luis Ángel Suárez</td><td>LI</td><td>online</td></tr><tr><td class="num">4</td><td>FS</td><td>Valencia</td><td>2024-02-12</td><td>Ana Sofía Ferrer</td><td>TA</td><td>presencial</td></tr><tr><td class="num">4</td><td>FS</td><td>Valencia</td><td>2024-02-12</td><td>Mario Prats</td><td>LI</td><td>online</td></tr><tr><td class="num">5</td><td>FS</td><td>Valencia</td><td>2023-09-18</td><td>Rosalva Ayuso</td><td>TA</td><td>presencial</td></tr><tr><td class="num">6</td><td>FS</td><td>Madrid</td><td>2024-02-12</td><td>Angélica Corral</td><td>TA</td><td>presencial</td></tr></table><p class="small muted" style="margin-top:-2mm">10 filas</p>
+</div>
+</section>
+
+<section>
+<div class="keep">
+  <h2>Consulta 5 · Alumnos que han aprobado todos sus proyectos</h2>
+<pre><span class="k">SELECT</span> a.nombre, pr.vertical, pr.campus
+<span class="k">FROM</span> alumnos a
+    <span class="k">JOIN</span> alumnosPromocion apr <span class="k">ON</span> a.id = apr.id_alumnos
+    <span class="k">JOIN</span> promocion pr       <span class="k">ON</span> apr.id_promocion = pr.id
+    <span class="k">JOIN</span> alumnosProyectos ap <span class="k">ON</span> a.id = ap.id_alumnos
+<span class="k">GROUP BY</span> a.id, a.nombre, pr.vertical, pr.campus
+<span class="k">HAVING SUM</span>(<span class="k">CASE WHEN</span> ap.evaluacion = <span class="s">'No Apto'</span> <span class="k">THEN</span> 1 <span class="k">ELSE</span> 0 <span class="k">END</span>) = 0
+<span class="k">ORDER BY</span> a.nombre;</pre>
+<table class="small"><tr><th>nombre</th><th>vertical</th><th>campus</th></tr><tr><td>Anita Heredia</td><td>DS</td><td>Madrid</td></tr><tr><td>Daniela Falcó</td><td>DS</td><td>Madrid</td></tr><tr><td>Eli Casas</td><td>DS</td><td>Madrid</td></tr><tr><td>Ernesto Uriarte</td><td>FS</td><td>Valencia</td></tr><tr><td>Haydée Figueroa</td><td>DS</td><td>Madrid</td></tr><tr><td>Herberto Figueras</td><td>FS</td><td>Madrid</td></tr><tr><td>Leoncio Tena</td><td>DS</td><td>Madrid</td></tr><tr><td>Loida Arellano</td><td>FS</td><td>Madrid</td></tr><tr><td>Ricarda Tovar</td><td>FS</td><td>Valencia</td></tr><tr><td>Rosalina Llanos</td><td>DS</td><td>Madrid</td></tr><tr><td>Teresa Laguna</td><td>FS</td><td>Valencia</td></tr></table><p class="small muted" style="margin-top:-2mm">11 filas</p>
+  <p class="small"><code>HAVING</code> filtra después de agrupar: nos quedamos con los alumnos que tienen 0 "No Apto". Son 11 de 52.</p>
+
+</div>
+<div class="keep">
+  <h2>Consulta 6 · Resumen por campus y vertical</h2>
+<pre><span class="k">SELECT</span> pr.campus, pr.vertical,
+       <span class="k">COUNT</span>(<span class="k">DISTINCT</span> apr.id_alumnos) <span class="k">AS</span> alumnos,
+       <span class="k">COUNT</span>(<span class="k">DISTINCT</span> pc.id_claustro) <span class="k">AS</span> docentes
+<span class="k">FROM</span> promocion pr
+    <span class="k">LEFT JOIN</span> alumnosPromocion apr <span class="k">ON</span> pr.id = apr.id_promocion
+    <span class="k">LEFT JOIN</span> promocionClaustro pc <span class="k">ON</span> pr.id = pc.id_promocion
+<span class="k">GROUP BY</span> pr.campus, pr.vertical
+<span class="k">ORDER BY</span> pr.campus, pr.vertical;</pre>
+<table class="small"><tr><th>campus</th><th>vertical</th><th>alumnos</th><th>docentes</th></tr><tr><td>Madrid</td><td>DS</td><td class="num">25</td><td class="num">4</td></tr><tr><td>Madrid</td><td>FS</td><td class="num">14</td><td class="num">3</td></tr><tr><td>Valencia</td><td>FS</td><td class="num">13</td><td class="num">3</td></tr></table><p class="small muted" style="margin-top:-2mm">3 filas</p>
+  <p class="small"><code>COUNT(DISTINCT …)</code> evita contar dos veces a la misma persona al unir dos tablas a la vez.</p>
+</div>
+</section>
+
+<!-- ============ 7. ESCALABILIDAD ============ -->
+<section class="page">
+  <h1>7 · Escalabilidad: cómo crece la base de datos</h1>
+  <p>El enunciado pide que la base de datos pueda crecer en campus, verticales, promociones, modalidades, etc.
+     Gracias a la normalización, casi todo se hace <b>añadiendo filas, sin cambiar la estructura</b>:</p>
+
+  <h3>Abrir un campus nuevo (Barcelona) con una promoción de Data Science</h3>
+<pre><span class="k">INSERT INTO</span> promocion (año, fecha_comienzo, campus, vertical)
+<span class="k">VALUES</span> (2025, <span class="s">'2025-09-15'</span>, <span class="s">'Barcelona'</span>, <span class="s">'DS'</span>);   <span class="c">-- el id se genera solo</span></pre>
+
+  <h3>Crear una vertical nueva (Ciberseguridad) con sus proyectos</h3>
+<pre><span class="k">INSERT INTO</span> proyectos (nombre) <span class="k">VALUES</span> (<span class="s">'Redes'</span>), (<span class="s">'Pentesting'</span>);
+<span class="k">INSERT INTO</span> promocion (año, fecha_comienzo, campus, vertical)
+<span class="k">VALUES</span> (2025, <span class="s">'2025-10-01'</span>, <span class="s">'Madrid'</span>, <span class="s">'CS'</span>);
+<span class="c">-- y se enlazan en promocionProyectos</span></pre>
+
+  <h3>Un alumno que hace un segundo bootcamp</h3>
+<pre><span class="c">-- Jafet (id 1) se apunta también a la promoción Full Stack de Madrid (id 3)</span>
+<span class="k">INSERT INTO</span> alumnosPromocion (id_promocion, id_alumnos) <span class="k">VALUES</span> (3, 1);</pre>
+  <p>Esto es posible porque Alumnos–Promoción es <b>N:M</b>. Con el diseño 1:N no se podría sin duplicar al alumno.</p>
+
+  <table class="small">
+    <tr><th>Quiero añadir…</th><th>¿Cambia la estructura?</th><th>Cómo</th></tr>
+    <tr><td>Un campus</td><td class="good">No</td><td>Nueva fila en <code>promocion</code></td></tr>
+    <tr><td>Una promoción</td><td class="good">No</td><td>Nueva fila en <code>promocion</code></td></tr>
+    <tr><td>Un proyecto</td><td class="good">No</td><td>Nueva fila en <code>proyectos</code> + <code>promocionProyectos</code></td></tr>
+    <tr><td>Una vertical</td><td class="good">No</td><td>Nuevo valor en <code>promocion.vertical</code></td></tr>
+    <tr><td>Un profesor</td><td class="good">No</td><td>Nueva fila en <code>claustro</code> + <code>promocionClaustro</code></td></tr>
+    <tr><td>Una modalidad nueva (p. ej. "híbrida")</td><td class="bad">Sí</td><td>Hay que modificar el ENUM / CHECK (ver mejoras)</td></tr>
+    <tr><td>Aulas</td><td class="bad">Sí</td><td>Nueva tabla <code>aula</code> relacionada con promoción (ver mejoras)</td></tr>
+  </table>
+</section>
+
+<!-- ============ 8. MEJORAS ============ -->
+<section class="page">
+  <h1>8 · Decisiones, limitaciones y mejoras futuras</h1>
+  <h2>Decisiones tomadas</h2>
+  <ul>
+    <li><b>Normalizar antes del E/R</b>, porque partimos de datos existentes (ver sección 0).</li>
+    <li><b>Todas las relaciones N:M</b>, incluida Alumnos–Promoción, para que un alumno pueda estar en varias promociones.</li>
+    <li><b>Crear las promociones 5 y 6</b> aunque no tengan alumnos, porque aparecen en el claustro.</li>
+    <li><b>Mantener los nombres tal como vienen en los CSV</b> (incluido <code>FullSatck</code>) para no alterar los datos de origen.</li>
+    <li><b>Supabase en lugar de Render</b>: los dos ofrecen PostgreSQL gratuito; el script funciona en ambos.</li>
+  </ul>
+
+  <h2>Mejoras que se podrían hacer</h2>
+  <table class="small">
+    <tr><th style="width:30%">Mejora</th><th>Qué aporta</th></tr>
+    <tr><td>Tabla <code>modalidad</code> (id, tipo)</td><td>Añadir "Híbrida" o "Telemática" sería un simple INSERT, sin tocar la estructura. Se podría usar también para alumnos y promociones.</td></tr>
+    <tr><td>Tablas <code>campus</code> y <code>vertical</code></td><td>Evitan errores de escritura ("Madrid" vs "madrid") y permiten guardar más datos de cada campus (dirección, ciudad…).</td></tr>
+    <tr><td>Tabla <code>aula</code></td><td>El enunciado menciona las aulas como posible crecimiento.</td></tr>
+    <tr><td>Quitar <code>año</code> de promoción</td><td>Es derivable de <code>fecha_comienzo</code>; quitarlo elimina la última redundancia.</td></tr>
+    <tr><td><code>UNIQUE</code> en <code>alumnos.email</code> y <code>NOT NULL</code> en columnas obligatorias</td><td>Más integridad: no puede haber dos alumnos con el mismo email ni alumnos sin nombre.</td></tr>
+    <tr><td><code>CHECK (evaluacion IN ('Apto','No Apto'))</code></td><td>Impide valores de evaluación inválidos.</td></tr>
+    <tr><td>Corregir <code>FullSatck</code> → <code>FullStack</code></td><td>Limpieza de datos de origen.</td></tr>
+  </table>
+
+  <h2>Conclusión</h2>
+  <p>Partimos de 5 CSV con datos repetidos y columnas que significaban lo mismo, y llegamos a una base de datos de
+     <b>8 tablas en 3FN</b>, con claves primarias y foráneas que garantizan la integridad, <b>420 filas</b> cargadas,
+     alojada en PostgreSQL (Supabase) y preparada para crecer en campus, promociones, proyectos y profesorado sin cambiar su estructura.</p>
+</section>
+
+<!-- ============ ANEXO ============ -->
+<section class="page">
+  <h1>A · Anexo: ficheros entregados</h1>
+  <table>
+    <tr><th>Fichero</th><th>Contenido</th></tr>
+    <tr><td><code>data/clase_1.csv</code> … <code>clase_4.csv</code>, <code>data/claustro.csv</code></td><td>Datos de partida</td></tr>
+    <tr><td>Diagrama E/R (draw.io)</td><td>Modelo Entidad-Relación (Figura 1)</td></tr>
+    <tr><td><code>docs/img/supabase_*.jpg</code></td><td>Capturas de la base de datos en Supabase (Figuras 3 a 8)</td></tr>
+    <tr><td><code>ProyectoGrupalScriptCreacion.sql</code></td><td>Script de creación de tablas para MySQL Workbench</td></tr>
+    <tr><td><code>ProyectoGrupal_Inserts.sql</code></td><td>INSERT de todos los datos (válidos en MySQL y PostgreSQL)</td></tr>
+    <tr><td><code>ProyectoGrupal_PostgreSQL.sql</code></td><td>Script completo para Supabase / Render: tablas + datos + comprobación</td></tr>
+    <tr><td><code>Proyecto_BBDD.md</code></td><td>Enunciado del proyecto</td></tr>
+  </table>
+  <div class="box">
+    <b class="t">Para la presentación</b>
+    <ol style="margin:0">
+      <li>Enseñar un CSV original y señalar los problemas (sección 2.1).</li>
+      <li>Explicar la normalización con el ejemplo de Jafet Casals (secciones 2.2–2.4).</li>
+      <li>Enseñar el E/R y el modelo relacional (figuras 1 y 2).</li>
+      <li>Abrir Supabase, ejecutar la consulta de recuento y 2 o 3 consultas de la sección 6.</li>
+      <li>Terminar con la escalabilidad: insertar un campus nuevo en directo (sección 7).</li>
+    </ol>
+  </div>
+</section>
+
+</body>
+</html>

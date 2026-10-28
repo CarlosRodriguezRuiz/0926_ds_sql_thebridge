@@ -1,0 +1,27 @@
+<section id="reglas" data-transition="fade" style="background:#F6F5F0;color:#14213D;font-family:'Public Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Del E/R a tablas: tres reglas</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFFFF;border:2px solid #DCE2EC;border-radius:20px;padding:40px">
+<p style="font-size:24px;font-weight:700;color:#2F6FEB;text-transform:uppercase;letter-spacing:2px">Entidad</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:44px;font-weight:700">Una tabla</h3>
+<p style="font-size:28px;line-height:1.4;color:#3E4A5E">Su identificador pasa a ser la <b style="color:#14213D">clave primaria (PK)</b>.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFFFF;border:2px solid #DCE2EC;border-radius:20px;padding:40px">
+<p style="font-size:24px;font-weight:700;color:#2F6FEB;text-transform:uppercase;letter-spacing:2px">Relación 1:N</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:44px;font-weight:700">Sin tabla nueva</h3>
+<p style="font-size:28px;line-height:1.4;color:#3E4A5E">La PK del lado “1” se copia como <b style="color:#14213D">clave foránea (FK)</b> en el lado “N”.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFFFF;border:2px solid #DCE2EC;border-radius:20px;padding:40px">
+<p style="font-size:24px;font-weight:700;color:#2F6FEB;text-transform:uppercase;letter-spacing:2px">Relación N:M</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:44px;font-weight:700">Tabla intermedia</h3>
+<p style="font-size:28px;line-height:1.4;color:#3E4A5E">Con las dos PK, que juntas forman su PK y cada una es FK.</p>
+</div>
+</div>
+<div style="display:flex;gap:28px;align-items:center;background:#14213D;border-radius:20px;padding:36px 44px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:700;color:#F2A65A;white-space:nowrap">4 + 4 = 8</p>
+<p style="font-size:30px;color:#F6F5F0;line-height:1.4">4 tablas de entidades + 4 tablas intermedias, porque todas nuestras relaciones son N:M.</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#6B7690">Bloque 4 · [Ponente 4]</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6B7690">10</p>
+<aside>Ponente 4. PK: la columna que identifica cada fila sin repetirse, por ejemplo alumnos.id. FK: una columna que apunta a la PK de otra tabla y así las enlaza, por ejemplo alumnosProyectos.id_alumnos apunta a alumnos.id. Como todas nuestras relaciones son N:M, cada una crea su tabla intermedia.</aside>
+</section>
